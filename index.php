@@ -33,6 +33,8 @@ add_action( 'admin_menu', 'minmat_plugin_menu');
 
 include('install_plugin.php');
 include('admin_panel.php');
+include('languages.php');
+
 
 
 

@@ -5,7 +5,7 @@ function minmat_create_db($minmat_pluginname) {
     global $table_prefix, $wpdb;
 
     // Customer Table
-    $customerTable = $table_prefix . $minmat_pluginname . 'ingredienser';
+    $customerTable = $table_prefix . $minmat_pluginname . 'ingredients';
     // Create Customer Table if not exist
     if( $wpdb->get_var( "show tables like '$customerTable'" ) != $customerTable ) {
         $charset_collate = $wpdb->get_charset_collate();
@@ -23,7 +23,7 @@ function minmat_create_db($minmat_pluginname) {
         // Create Table
         dbDelta( $sql );
     }
-    $customerTable = $table_prefix . $minmat_pluginname . 'matratter';
+    $customerTable = $table_prefix . $minmat_pluginname . 'dishes';
 
     if( $wpdb->get_var( "show tables like '$customerTable'" ) != $customerTable ) {
 
@@ -43,16 +43,16 @@ function minmat_create_db($minmat_pluginname) {
         // Create Table
         dbDelta( $sql );
     }
-    $customerTable = $table_prefix . $minmat_pluginname . 'matratter_ingredienser';
+    $customerTable = $table_prefix . $minmat_pluginname . 'dishes_ingredients';
 
     if( $wpdb->get_var( "show tables like '$customerTable'" ) != $customerTable ) {
 
         // Query - Create Table
         $sql = "CREATE TABLE `$customerTable` (";
-        $sql .= " `mat_ID` int(10) NOT NULL , ";
-        $sql .= " `ingrediens_id` INT(10) , ";
+        $sql .= " `dish_ID` int(10) NOT NULL , ";
+        $sql .= " `ingrediens_ID` INT(10) , ";
         $sql .= " `value` int(10) , ";
-        $sql .= " `unit_id` tinyint(2) ";
+        $sql .= " `unit_ID` tinyint(2) ";
         $sql .= ") ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
         // Include Upgrade Scriptw
@@ -63,14 +63,14 @@ function minmat_create_db($minmat_pluginname) {
 
     }
 
-    $customerTable = $table_prefix . $minmat_pluginname . 'users_matratter';
+    $customerTable = $table_prefix . $minmat_pluginname . 'users_dishes';
 
     if( $wpdb->get_var( "show tables like '$customerTable'" ) != $customerTable ) {
 
         // Query - Create Table
         $sql = "CREATE TABLE `$customerTable` (";
-        $sql .= " `user_id` int(10) NOT NULL , ";
-        $sql .= " `matratt_id` INT(10) ";
+        $sql .= " `user_ID` int(10) NOT NULL , ";
+        $sql .= " `dish_ID` INT(10) ";
         $sql .= ") ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
         // Include Upgrade Script
@@ -78,7 +78,6 @@ function minmat_create_db($minmat_pluginname) {
 
         // Create Table
         dbDelta( $sql );
-
     }
     $customerTable = $table_prefix . $minmat_pluginname . 'units';
 
@@ -102,12 +101,23 @@ function minmat_create_db($minmat_pluginname) {
     }
 
     //array with measurements,first
-    $units = ['Liter'=>['',''],'deciliter'=>['1','0.1'],'centliter'=>['1','0.01'], 'milliliter'=>['1', '0.001']];
+    $units = [
+                'Liter'=>['',''],
+                'deciliter'=>['1','0.1'],
+                'centliter'=>['1','0.01'],
+                'milliliter'=>['1', '0.001'],
+                'matsked'=>['1', '0.015'],
+                'tesked' =>['1', '0.005'],
+                'kryddmått' =>['1', '0.001'],
+                'kilo' =>['',''],
+                'hekto'=>['8','0.1'],
+                'gram'=>['8','0.001']
+            ];
 
-        foreach($units as $key => $values){
-            $string = array ('unit_id' => (int) $id, 'unit_name'=> $key, 'parent_id'=>(int)$values[0], 'convert_to_parent'=>(float) $values[1]);
-            $wpdb->insert( $customerTable, $string);
-        }
+    foreach($units as $key => $values){
+        $string = array ('unit_id' => (int) $id, 'unit_name'=> $key, 'parent_id'=>(int)$values[0], 'convert_to_parent'=>(float) $values[1]);
+        $wpdb->insert( $customerTable, $string);
+    }
 
 }
 
@@ -115,7 +125,7 @@ function minmat_create_db($minmat_pluginname) {
 function minmat_remove_db($minmat_pluginname) {
     global $table_prefix, $wpdb;
 
-    $database_name = ['matratter', 'ingredienser', 'units', 'users_matratter','matratter_ingredienser'];
+    $database_name = ['dishes', 'ingredients', 'units', 'users_dishes','dishes_ingredientswa '];
     foreach($database_name as $key){
         $customerTable = $table_prefix . $minmat_pluginname . $key;
         $sql = "DROP TABLE IF EXISTS $customerTable";
@@ -124,7 +134,4 @@ function minmat_remove_db($minmat_pluginname) {
         delete_option("minmat_db_version");
 
 }
-
-
-
  ?>
