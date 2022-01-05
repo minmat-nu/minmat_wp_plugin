@@ -15,14 +15,20 @@ register_activation_hook( __FILE__, "minmat_activate_plugin");
 register_deactivation_hook( __FILE__, "minmat_deactivate_plugin" );
 // Activate Plugin
 function minmat_activate_plugin() {
-
+    minmat_create_db();
 }
 
 // De-activate Plugin
 function minmat_deactivate_plugin() {
 	// Execute tasks on Plugin de-activation
+    minmat_remove_db();
 }
 
+
+add_action( 'admin_menu', 'minmat_plugin_menu');
+
+include('install_plugin.php');
+include('admin_panel.php');
 
 
 
